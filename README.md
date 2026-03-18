@@ -1,5 +1,8 @@
 # like.in Custom Dashboard Builder - 2026
 
+## Demo Link
+https://drive.google.com/open?id=14u3DkzbxBRfHs1p0F_YLTPU-fARIpbbi&usp=drive_copy
+
 ## Custom Dashboard Builder
 
 This project is built using Vanilla HTML, CSS, and JavaScript. Because it uses native ES modules and avoids a complex backend build system, it simply needs to be served by a local web server to function correctly (opening `file:///` directly can cause CORS issues with module loading in some strict browsers).
@@ -22,3 +25,4 @@ You can use any light-weight local web server. Since you have Python installed, 
 
 ### Alternative Methods
 If you install Node.js in the future, you can also use `npx serve` or the "Live Server" extension in VS Code.
+
