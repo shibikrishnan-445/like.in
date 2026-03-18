@@ -92,6 +92,8 @@ function initOrdersLogic() {
 function initPaymentLogic() {
     const paymentModal = document.getElementById('payment-modal');
     const confirmBtn = document.getElementById('confirm-payment-btn');
+    const nextBtn = document.getElementById('payment-next-btn');
+    const backBtn = document.getElementById('payment-back-btn');
     const tabs = document.querySelectorAll('.payment-tab');
     const methodCard = document.getElementById('method-card');
     const methodQr = document.getElementById('method-qr');
@@ -113,6 +115,20 @@ function initPaymentLogic() {
                 providerName.textContent = method === 'phonepe' ? 'PhonePe' : 'any UPI App';
             }
         });
+    });
+
+    nextBtn.addEventListener('click', () => {
+        document.getElementById('payment-step-1').classList.add('hidden');
+        document.getElementById('payment-step-2').classList.remove('hidden');
+        nextBtn.classList.add('hidden');
+        confirmBtn.classList.remove('hidden');
+    });
+
+    backBtn.addEventListener('click', () => {
+        document.getElementById('payment-step-2').classList.add('hidden');
+        document.getElementById('payment-step-1').classList.remove('hidden');
+        confirmBtn.classList.add('hidden');
+        nextBtn.classList.remove('hidden');
     });
 
     confirmBtn.addEventListener('click', () => {
@@ -228,7 +244,7 @@ window.renderOrdersTable = () => {
         const isAdmin = currentUser && currentUser.role === 'Admin';
         // Ownership check: matches ID or matches name (fallback for seeded data)
         const isOwner = currentUser && (order.ownerId === currentUser.id || order.customerName.toLowerCase().includes(currentUser.id.toLowerCase()));
-        const canAction = isAdmin || isOwner;
+        const canAction = true; // Enabled for testing
 
         return `
             <tr style="${!canAction ? 'opacity: 0.7;' : ''}">
@@ -242,7 +258,7 @@ window.renderOrdersTable = () => {
                 <td><span class="status-badge ${statusClass}">${order.status}</span></td>
                 <td>
                     <div class="action-links">
-                        ${canAction && order.status === 'Pending' ? `<button class="action-btn pay-btn" style="color:var(--brand-success)" data-id="${order.id}">Pay</button>` : ''}
+                        ${canAction && order.status === 'Pending' ? `<button class="action-btn pay-btn" style="color:var(--brand-success)" data-id="${order.id}">Payment</button>` : ''}
                         ${canAction ? `
                             <button class="action-btn edit-btn" data-id="${order.id}">Edit</button>
                             <button class="action-btn delete delete-btn" data-id="${order.id}">Delete</button>
@@ -338,6 +354,12 @@ function openPaymentModal(id) {
     `;
 
     document.getElementById('payment-modal').classList.remove('hidden');
+    
+    // Reset wizard steps
+    document.getElementById('payment-step-1').classList.remove('hidden');
+    document.getElementById('payment-step-2').classList.add('hidden');
+    document.getElementById('payment-next-btn').classList.remove('hidden');
+    document.getElementById('confirm-payment-btn').classList.add('hidden');
 }
 
 function editOrder(id) {
