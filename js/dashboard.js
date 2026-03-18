@@ -128,6 +128,7 @@ window.renderConfigCanvas = () => {
 
     // Initialize widget resizing
     initWidgetResizing(true);
+    if (window.initGridReordering) window.initGridReordering(true);
 
     // Attach config-only action buttons events (delete & settings)
     const settingsBtns = canvas.querySelectorAll('.settings-btn');
@@ -185,6 +186,7 @@ window.renderDashboard = () => {
 
     // Initialize widget resizing
     initWidgetResizing(false);
+    if (window.initGridReordering) window.initGridReordering(false);
 };
 
 function initWidgetResizing(isConfigMode) {

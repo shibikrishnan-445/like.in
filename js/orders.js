@@ -186,6 +186,9 @@ function simulatePayment(orderId) {
     }, 500);
 }
 
+window.currentOrdersPage = 1;
+window.ordersPerPage = 20;
+
 window.renderOrdersTable = () => {
     const tableBody = document.getElementById('orders-table-body');
     const emptyState = document.getElementById('orders-empty-state');
@@ -194,17 +197,27 @@ window.renderOrdersTable = () => {
     const isAdmin = currentUser && currentUser.role === 'Admin';
     
     // Admin sees all, Customer sees only personal orders
-    const orders = isAdmin ? window.appStore.getOrders('all') : window.appStore.getOrders(currentUser.id);
+    const allOrders = isAdmin ? window.appStore.getOrders('all') : window.appStore.getOrders(currentUser.id);
 
-    if (orders.length === 0) {
+    if (allOrders.length === 0) {
         tableBody.innerHTML = '';
         emptyState.style.display = 'flex';
         document.querySelector('.premium-table').style.display = 'none';
+        const paginationControls = document.getElementById('orders-pagination');
+        if (paginationControls) paginationControls.style.display = 'none';
         return;
     }
 
     emptyState.style.display = 'none';
     document.querySelector('.premium-table').style.display = 'table';
+    
+    // Pagination logic
+    const totalPages = Math.ceil(allOrders.length / window.ordersPerPage);
+    if (window.currentOrdersPage > totalPages) window.currentOrdersPage = totalPages;
+    if (window.currentOrdersPage < 1) window.currentOrdersPage = 1;
+
+    const startIndex = (window.currentOrdersPage - 1) * window.ordersPerPage;
+    const orders = allOrders.slice(startIndex, startIndex + window.ordersPerPage);
     
     tableBody.innerHTML = orders.map(order => {
         let statusClass = 'status-pending';
@@ -259,6 +272,43 @@ window.renderOrdersTable = () => {
             openPaymentModal(e.target.dataset.id);
         });
     });
+
+    renderOrdersPagination(totalPages);
+};
+
+function renderOrdersPagination(totalPages) {
+    let paginationContainer = document.getElementById('orders-pagination');
+    if (!paginationContainer) {
+        paginationContainer = document.createElement('div');
+        paginationContainer.id = 'orders-pagination';
+        paginationContainer.className = 'pagination-controls';
+        paginationContainer.style.display = 'flex';
+        paginationContainer.style.justifyContent = 'center';
+        paginationContainer.style.alignItems = 'center';
+        paginationContainer.style.gap = '15px';
+        paginationContainer.style.marginTop = '20px';
+        paginationContainer.style.padding = '10px';
+        const tableContainer = document.querySelector('.table-container');
+        tableContainer.appendChild(paginationContainer);
+    }
+    
+    if (totalPages <= 1) {
+        paginationContainer.style.display = 'none';
+        return;
+    }
+    
+    paginationContainer.style.display = 'flex';
+    
+    let html = `<button class="btn btn-secondary" onclick="window.changeOrdersPage(${window.currentOrdersPage - 1})" ${window.currentOrdersPage === 1 ? 'disabled' : ''}>Previous</button>`;
+    html += `<span style="font-size:0.9rem; color:var(--text-muted);">Page ${window.currentOrdersPage} of ${totalPages}</span>`;
+    html += `<button class="btn btn-secondary" onclick="window.changeOrdersPage(${window.currentOrdersPage + 1})" ${window.currentOrdersPage === totalPages ? 'disabled' : ''}>Next</button>`;
+    
+    paginationContainer.innerHTML = html;
+}
+
+window.changeOrdersPage = (page) => {
+    window.currentOrdersPage = page;
+    window.renderOrdersTable();
 };
 
 function openPaymentModal(id) {

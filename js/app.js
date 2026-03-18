@@ -92,6 +92,13 @@ function initNavigation() {
                 
                 // Render orders
                 if (window.renderOrdersTable) window.renderOrdersTable();
+            } else if (tabName === 'users') {
+                document.getElementById('view-users').classList.remove('hidden');
+                document.getElementById('view-users').classList.add('active');
+                pageTitle.textContent = 'User Management';
+                dashboardActions.classList.add('hidden');
+                ordersActions.classList.add('hidden');
+                
             } else if (tabName === 'profile') {
                 document.getElementById('view-profile').classList.remove('hidden');
                 document.getElementById('view-profile').classList.add('active');
@@ -126,12 +133,16 @@ window.updateUserUI = () => {
     // RBAC: Hide Add Order buttons for Admin
     const sidebarAddBtn = document.getElementById('sidebar-add-order-btn');
     const dashAddBtn = document.getElementById('dashboard-add-order-btn');
+    const sidebarUsersBtn = document.getElementById('sidebar-users-btn');
+    
     if (user.role === 'Admin') {
         if (sidebarAddBtn) sidebarAddBtn.classList.add('hidden');
         if (dashAddBtn) dashAddBtn.classList.add('hidden');
+        if (sidebarUsersBtn) sidebarUsersBtn.classList.remove('hidden');
     } else {
         if (sidebarAddBtn) sidebarAddBtn.classList.remove('hidden');
         if (dashAddBtn) dashAddBtn.classList.remove('hidden');
+        if (sidebarUsersBtn) sidebarUsersBtn.classList.add('hidden');
     }
 
     // Update Profile View if active

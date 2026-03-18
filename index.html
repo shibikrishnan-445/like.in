@@ -12,6 +12,9 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <!-- SortableJS -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+
     <!-- App Styles -->
     <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -47,6 +50,12 @@
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                     <span>Add Order</span>
                 </li>
+                
+                <li class="nav-item hidden" data-tab="users" id="sidebar-users-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    <span>Users</span>
+                </li>
+
                 <li class="nav-item" data-tab="profile">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                     <span>My Profile</span>
@@ -204,6 +213,57 @@
                         </table>
                         <div id="orders-empty-state" class="empty-state">
                             <p>No customer orders yet. Create an order to get started.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Management View -->
+                <div id="view-users" class="view hidden">
+                    <div class="table-container">
+                        <div class="card" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+                            <h2>User Management</h2>
+                            <p class="text-muted mt-2">Manage customer accounts and administrative access here.</p>
+                        </div>
+                        <div class="card">
+                            <table class="premium-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID / Name</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div style="font-weight: 600;">Admin User</div>
+                                            <div style="font-size: 0.8em; color: var(--text-muted);">admin</div>
+                                        </td>
+                                        <td>admin@hellyx.com</td>
+                                        <td><span class="status-badge status-completed">Admin</span></td>
+                                        <td>
+                                            <div class="action-links">
+                                                <button class="action-btn">Edit</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div style="font-weight: 600;">Customer A</div>
+                                            <div style="font-size: 0.8em; color: var(--text-muted);">customer1</div>
+                                        </td>
+                                        <td>customer1@example.com</td>
+                                        <td><span class="status-badge status-pending">Customer</span></td>
+                                        <td>
+                                            <div class="action-links">
+                                                <button class="action-btn">Edit</button>
+                                                <button class="action-btn delete">Suspend</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -707,16 +767,16 @@
     </div>
 
     <!-- Scripts -->
-    <script src="js/store.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/templates.js"></script>
-    <script src="js/charts.js"></script>
-    <script src="js/dashboard.js"></script>
-    <script src="js/drag-and-drop.js"></script>
-    <script src="js/settings.js"></script>
-    <script src="js/orders.js"></script>
-    <script src="js/sidebar.js"></script>
-    <script src="js/history.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/store.js?v=1.1"></script>
+    <script src="js/auth.js?v=1.1"></script>
+    <script src="js/templates.js?v=1.1"></script>
+    <script src="js/charts.js?v=1.1"></script>
+    <script src="js/dashboard.js?v=1.1"></script>
+    <script src="js/drag-and-drop.js?v=1.1"></script>
+    <script src="js/settings.js?v=1.1"></script>
+    <script src="js/orders.js?v=1.1"></script>
+    <script src="js/sidebar.js?v=1.1"></script>
+    <script src="js/history.js?v=1.1"></script>
+    <script src="js/app.js?v=1.1"></script>
 </body>
 </html>

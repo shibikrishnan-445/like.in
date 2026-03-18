@@ -66,8 +66,28 @@ function initDragAndDrop() {
         if (placeholder) placeholder.remove();
         
         const type = e.dataTransfer.getData('text/plain');
-        if (type) {
+        const allowedTypes = ['bar', 'line', 'pie', 'area', 'scatter', 'table', 'kpi'];
+        
+        if (type && allowedTypes.includes(type)) {
             addNewWidget(type);
+        } else if (e.dataTransfer.getData('reorder-id')) {
+            // It's a reorder drop that landed on the empty canvas space (not on another card)
+            const sourceId = e.dataTransfer.getData('reorder-id');
+            const isConfigMode = document.getElementById('view-config').classList.contains('active');
+            let arr = isConfigMode ? window.currentDashboardDraft : window.appStore.getDashboardConfig();
+            
+            const idx1 = arr.findIndex(w => w.id === sourceId);
+            if (idx1 !== -1) {
+                // Move to end
+                const [removed] = arr.splice(idx1, 1);
+                arr.push(removed);
+                
+                if (!isConfigMode) {
+                    window.appStore.setDashboardConfig([...arr]);
+                } else {
+                    window.renderConfigCanvas();
+                }
+            }
         }
     });
 }
@@ -105,3 +125,59 @@ function addNewWidget(type) {
     // Re-render config canvas
     window.renderConfigCanvas();
 }
+
+window.initGridReordering = (isConfigMode) => {
+    const gridPrefix = isConfigMode ? 'config-canvas' : 'dashboard-grid';
+    const grid = document.getElementById(gridPrefix);
+    if (!grid) return;
+
+    if (grid.sortableTracker) {
+        grid.sortableTracker.destroy();
+    }
+
+    if (typeof Sortable !== 'undefined') {
+        grid.sortableTracker = new Sortable(grid, {
+            animation: 250,
+            easing: "cubic-bezier(0.2, 0, 0, 1)",
+            handle: '.widget-header',
+            ghostClass: 'sortable-ghost',
+            draggable: '.widget-card',
+            onEnd: function (evt) {
+                let arr = isConfigMode ? window.currentDashboardDraft : window.appStore.getDashboardConfig();
+                
+                // Ignore if it wasn't actually moved
+                if (evt.oldIndex === evt.newIndex) return;
+                
+                // Create a clone of the array to apply changes
+                const newArr = [...arr];
+                
+                // Account for potential placeholder indices in config canvas that Sortable might count
+                // But since we restricted draggable to `.widget-card`, it usually perfectly aligns 
+                // with our array bounds.
+                
+                if (evt.oldIndex >= 0 && evt.oldIndex < newArr.length && evt.newIndex >= 0 && evt.newIndex < newArr.length) {
+                    const movedItem = newArr.splice(evt.oldIndex, 1)[0];
+                    newArr.splice(evt.newIndex, 0, movedItem);
+                    
+                    if (!isConfigMode) {
+                        // Force a state update silently then re-render
+                        window.appStore.state.dashboardConfig = newArr;
+                        window.appStore.saveState(); 
+                    } else {
+                        window.currentDashboardDraft = newArr;
+                        // For config mode, we just let Sortable handle it visually or force refresh
+                        // Re-rendering canvas recreates the children, which is fine
+                        window.renderConfigCanvas();
+                    }
+                } else {
+                    // Fallback refresh if indexes look weird due to placeholders
+                    if (isConfigMode) {
+                        window.renderConfigCanvas();
+                    } else {
+                        window.renderDashboard();
+                    }
+                }
+            }
+        });
+    }
+};

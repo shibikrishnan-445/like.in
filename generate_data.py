@@ -11,7 +11,7 @@ names = ['John Doe', 'Jane Smith', 'Alice Johnson', 'Robert Brown', 'Emily Davis
 orders = []
 now = datetime.now()
 
-for i in range(1, 61):
+for i in range(1, 5001):
     qty = random.randint(1, 5)
     price = random.randint(50, 250)
     random_days_ago = random.randint(0, 90)
